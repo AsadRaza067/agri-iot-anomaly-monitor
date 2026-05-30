@@ -63,8 +63,7 @@ agri-iot-anomaly-monitor/
 │
 ├── app.py                  # Flask backend + sensor simulation + anomaly detection
 ├── requirements.txt        # Python dependencies
-├── templates/
-│   └── index.html          # Live dashboard (HTML + Chart.js)
+├── index.html              # Live dashboard (HTML + Chart.js)
 └── README.md
 ```
 
