@@ -1,1 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agri-food IoT Anomaly Monitor</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #1a1a2e; }
 
+    header {
+      background: linear-gradient(135deg, #1B4F8A, #0d3060);
+      color: white; padding: 18px 30px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    header h1 { font-size: 1.3rem; font-weight: 700; }
+    header p  { font-size: 0.8rem; opacity: 0.75; margin-top: 2px; }
+    .badge { background: #F0A500; color: #1a1a2e; font-size: 0.7rem;
+             font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px 20px; }
+
+    /* ── Stats cards ── */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 16px; margin-bottom: 24px; }
+    .card {
+      background: white; border-radius: 10px; padding: 18px 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.07);
+      border-left: 4px solid #1B4F8A;
+    }
+    .card.alert-card { border-left-color: #e53e3e; }
+    .card.ok-card    { border-left-color: #38a169; }
+    .card label { font-size: 0.72rem; color: #666; text-transform: uppercase; letter-spacing: .5px; }
+    .card .val  { font-size: 2rem; font-weight: 700; color: #1B4F8A; margin-top: 4px; }
+    .card.alert-card .val { color: #e53e3e; }
+    .card.ok-card    .val { color: #38a169; }
+
+    /* ── Sensor readings ── */
+    .readings { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 16px; margin-bottom: 24px; }
+    .sensor-card {
+      background: white; border-radius: 10px; padding: 16px 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.07);
+    }
+    .sensor-card h3 { font-size: 0.8rem; color: #888; text-transform: uppercase; margin-bottom: 8px; }
+    .sensor-val { font-size: 2.2rem; font-weight: 700; }
+    .sensor-sub { font-size: 0.75rem; color: #aaa; margin-top: 2px; }
+    .normal   { color: #38a169; }
+    .anomaly  { color: #e53e3e; }
+
+    /* ── Status banner ── */
+    .status-banner {
+      border-radius: 8px; padding: 12px 20px; margin-bottom: 24px;
+      font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;
+    }
+    .status-banner.ok     { background: #f0fff4; border: 1px solid #9ae6b4; color: #276749; }
+    .status-banner.danger { background: #fff5f5; border: 1px solid #feb2b2; color: #9b2c2c; }
+
+    /* ── Chart ── */
+    .chart-box {
+      background: white; border-radius: 10px; padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.07); margin-bottom: 24px;
+    }
+    .chart-box h2 { font-size: 0.95rem; color: #444; margin-bottom: 16px; font-weight: 600; }
+
+    /* ── Alert log ── */
+    .log-box {
+      background: white; border-radius: 10px; padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.07);
+    }
+    .log-box h2 { font-size: 0.95rem; color: #444; margin-bottom: 12px; font-weight: 600; }
+    .log-entry {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      border-bottom: 1px solid #f0f0f0; padding: 10px 0; font-size: 0.82rem;
+    }
+    .log-entry:last-child { border-bottom: none; }
+    .log-type  { font-weight: 700; color: #e53e3e; }
+    .log-loc   { color: #888; font-size: 0.75rem; margin-top: 2px; }
+    .log-time  { color: #aaa; font-size: 0.75rem; white-space: nowrap; }
+    .tag-crit  { background: #fff5f5; color: #e53e3e; border-radius: 4px; padding: 2px 7px; font-size: 0.7rem; font-weight: 700; }
+    .tag-warn  { background: #fffbeb; color: #d69e2e; border-radius: 4px; padding: 2px 7px; font-size: 0.7rem; font-weight: 700; }
+    .no-alerts { color: #aaa; font-size: 0.85rem; text-align: center; padding: 20px 0; }
+
+    .refresh-btn {
+      background: #1B4F8A; color: white; border: none; padding: 8px 18px;
+      border-radius: 6px; cursor: pointer; font-size: 0.82rem; font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .refresh-btn:hover { background: #163d6e; }
+    .location-tag { font-size: 0.75rem; color: #666; margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🌾 Agri-food IoT Anomaly Monitor</h1>
+    <p>Semantic-Aware Cyber Digital Twin — Supply Chain Sensor Dashboard</p>
+  </div>
+  <span class="badge">LIVE</span>
+</header>
+
+<div class="container">
+
+  <button class="refresh-btn" onclick="fetchReading()">▶ Fetch New Sensor Reading</button>
+
+  <!-- Status banner -->
+  <div class="status-banner ok" id="statusBanner">
+    ✅ All supply chain nodes operating within safe parameters.
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="card"><label>Total Readings</label><div class="val" id="statTotal">—</div></div>
+    <div class="card ok-card"><label>Normal</label><div class="val" id="statNormal">—</div></div>
+    <div class="card alert-card"><label>Anomalies</label><div class="val" id="statAnom">—</div></div>
+    <div class="card"><label>Anomaly Rate</label><div class="val" id="statRate">—</div></div>
+  </div>
+
+  <!-- Latest readings -->
+  <div class="readings">
+    <div class="sensor-card">
+      <h3>🌡 Temperature</h3>
+      <div class="sensor-val normal" id="tempVal">—</div>
+      <div class="sensor-sub">Safe: 2°C – 8°C</div>
+      <div class="location-tag" id="tempLoc"></div>
+    </div>
+    <div class="sensor-card">
+      <h3>💧 Humidity</h3>
+      <div class="sensor-val normal" id="humVal">—</div>
+      <div class="sensor-sub">Safe: 60% – 85%</div>
+    </div>
+    <div class="sensor-card">
+      <h3>🌫 CO₂ Level</h3>
+      <div class="sensor-val normal" id="co2Val">—</div>
+      <div class="sensor-sub">Safe: 300 – 1000 ppm</div>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div class="chart-box">
+    <h2>📈 Temperature History (Last 20 Readings)</h2>
+    <canvas id="tempChart" height="80"></canvas>
+  </div>
+
+  <!-- Alert log -->
+  <div class="log-box">
+    <h2>🚨 Anomaly Alert Log</h2>
+    <div id="alertLog"><p class="no-alerts">No anomalies detected yet.</p></div>
+  </div>
+
+</div>
+
+<script>
+  let tempChart;
+  const tempLabels = [], tempData = [], alertLog = [];
+
+  function initChart() {
+    const ctx = document.getElementById('tempChart').getContext('2d');
+    tempChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: tempLabels,
+        datasets: [{
+          label: 'Temperature (°C)',
+          data: tempData,
+          borderColor: '#1B4F8A',
+          backgroundColor: 'rgba(27,79,138,0.08)',
+          tension: 0.4, fill: true, pointRadius: 4,
+          pointBackgroundColor: ctx => {
+            const v = tempData[ctx.dataIndex];
+            return (v < 2 || v > 8) ? '#e53e3e' : '#38a169';
+          }
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { min: 0, max: 20, grid: { color: '#f0f0f0' },
+               title: { display: true, text: '°C' } },
+          x: { grid: { display: false },
+               title: { display: true, text: 'Reading #' } }
+        }
+      }
+    });
+  }
+
+  async function fetchReading() {
+    const res  = await fetch('/api/reading');
+    const data = await res.json();
+    updateDashboard(data);
+    fetchStats();
+  }
+
+  async function fetchStats() {
+    const res  = await fetch('/api/stats');
+    const data = await res.json();
+    document.getElementById('statTotal').textContent  = data.total;
+    document.getElementById('statNormal').textContent = data.normal;
+    document.getElementById('statAnom').textContent   = data.anomalies;
+    document.getElementById('statRate').textContent   = data.anomaly_rate + '%';
+  }
+
+  function updateDashboard(data) {
+    // Sensor values
+    const tEl = document.getElementById('tempVal');
+    const hEl = document.getElementById('humVal');
+    const cEl = document.getElementById('co2Val');
+
+    tEl.textContent = data.temperature + '°C';
+    hEl.textContent = data.humidity + '%';
+    cEl.textContent = data.co2_ppm + ' ppm';
+    document.getElementById('tempLoc').textContent = '📍 ' + data.location;
+
+    const anomaly = data.status === 'ANOMALY';
+
+    tEl.className = 'sensor-val ' + ((data.temperature < 2 || data.temperature > 8) ? 'anomaly' : 'normal');
+    hEl.className = 'sensor-val ' + ((data.humidity < 60 || data.humidity > 85) ? 'anomaly' : 'normal');
+    cEl.className = 'sensor-val ' + ((data.co2_ppm < 300 || data.co2_ppm > 1000) ? 'anomaly' : 'normal');
+
+    // Status banner
+    const banner = document.getElementById('statusBanner');
+    if (anomaly) {
+      banner.className = 'status-banner danger';
+      banner.innerHTML = '🚨 ANOMALY DETECTED at ' + data.location + ' — ' + data.timestamp;
+    } else {
+      banner.className = 'status-banner ok';
+      banner.innerHTML = '✅ All nodes operating within safe parameters — ' + data.timestamp;
+    }
+
+    // Chart
+    const idx = tempLabels.length + 1;
+    tempLabels.push('#' + idx);
+    tempData.push(data.temperature);
+    if (tempLabels.length > 20) { tempLabels.shift(); tempData.shift(); }
+    tempChart.update();
+
+    // Alert log
+    if (anomaly && data.alerts.length > 0) {
+      data.alerts.forEach(a => {
+        alertLog.unshift({ ...a, location: data.location, time: data.timestamp });
+      });
+      renderLog();
+    }
+  }
+
+  function renderLog() {
+    const el = document.getElementById('alertLog');
+    if (alertLog.length === 0) {
+      el.innerHTML = '<p class="no-alerts">No anomalies detected yet.</p>';
+      return;
+    }
+    el.innerHTML = alertLog.slice(0, 15).map(a => `
+      <div class="log-entry">
+        <div>
+          <div class="log-type">${a.type}</div>
+          <div class="log-loc">📍 ${a.location} — Value: ${a.value} (Safe: ${a.safe})</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+          <span class="${a.level === 'CRITICAL' ? 'tag-crit' : 'tag-warn'}">${a.level}</span>
+          <span class="log-time">${a.time}</span>
+        </div>
+      </div>`).join('');
+  }
+
+  async function loadHistory() {
+    const res  = await fetch('/api/history');
+    const data = await res.json();
+    data.forEach((r, i) => {
+      tempLabels.push('#' + (i + 1));
+      tempData.push(r.temperature);
+      if (r.status === 'ANOMALY') {
+        r.alerts.forEach(a => alertLog.push({ ...a, location: r.location, time: r.timestamp }));
+      }
+    });
+    if (tempLabels.length > 20) {
+      tempLabels.splice(0, tempLabels.length - 20);
+      tempData.splice(0, tempData.length - 20);
+    }
+    tempChart.update();
+    renderLog();
+    fetchStats();
+  }
+
+  // Auto-refresh every 5 seconds
+  setInterval(fetchReading, 5000);
+
+  initChart();
+  loadHistory();
+</script>
+</body>
+</html>
