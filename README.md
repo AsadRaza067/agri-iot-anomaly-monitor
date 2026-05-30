@@ -2,7 +2,7 @@
 
 A real-time IoT sensor monitoring and anomaly detection dashboard for agri-food supply chains — built as a foundational prototype exploring core concepts of **Cyber Digital Twin (CDT)** architectures.
 
-## 📌 Project Overview
+## Project Overview
 
 This project simulates an IoT-enabled supply chain monitoring system that:
 - Ingests real-time sensor data from multiple supply chain nodes (warehouses, cold storage, transport units, processing zones)
@@ -10,7 +10,7 @@ This project simulates an IoT-enabled supply chain monitoring system that:
 - Displays a live dashboard with alert logging, historical charts, and anomaly statistics
 - Demonstrates the data ingestion and anomaly detection layers central to Semantic-Aware Cyber Digital Twin frameworks
 
-## 🔬 Research Motivation
+## Research Motivation
 
 This prototype was developed in preparation for doctoral research on **Semantic-Aware Cyber Digital Twins for Agri-food Supply Chains** — the PhD scholarship project at Maynooth University's Department of Computer Science (supervised by Dr. Mansoor Ahmed, ADAPT Centre).
 
@@ -21,7 +21,7 @@ The core challenge in agri-food CDT research is building systems that can:
 
 This project addresses challenge (1) and (2), providing a working prototype of the data and detection layers.
 
-## 🛠 Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -30,7 +30,7 @@ This project addresses challenge (1) and (2), providing a working prototype of t
 | Frontend Dashboard | HTML, CSS, JavaScript, Chart.js |
 | Data Simulation | Python random + sensor models |
 
-## 📊 Features
+## Features
 
 - **Live sensor readings** — temperature, humidity, CO₂ from simulated supply chain nodes
 - **Real-time anomaly detection** — CRITICAL / WARNING alerts with breach details
@@ -39,7 +39,7 @@ This project addresses challenge (1) and (2), providing a working prototype of t
 - **Statistics panel** — total readings, anomaly count, anomaly rate
 - **Auto-refresh** — new reading every 5 seconds
 
-## 🚀 How to Run
+## How to Run
 
 ```bash
 # 1. Clone the repository
@@ -56,7 +56,7 @@ python app.py
 # Go to: http://localhost:5000
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 agri-iot-anomaly-monitor/
@@ -68,7 +68,7 @@ agri-iot-anomaly-monitor/
 └── README.md
 ```
 
-## 🔮 Future Extensions
+## Future Extensions
 
 - Replace rule-based detection with ML models (Isolation Forest, LSTM)
 - Add OWL ontology layer for semantic reasoning over sensor data
@@ -76,7 +76,7 @@ agri-iot-anomaly-monitor/
 - Add MQTT protocol for real IoT data ingestion
 - Build a knowledge graph layer — moving toward full Semantic-Aware CDT
 
-## 👤 Author
+## Author
 
 **Asad Raza**
 BSc Computer Science — BIIT, PMAS Arid Agriculture University Rawalpindi
