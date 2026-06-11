@@ -1,83 +1,148 @@
-# 🌾 Agri-food IoT Anomaly Monitor
+# Decentralised Anomaly Detection in Heterogeneous Agri-IoT Networks Using Edge Computing
 
-A real-time IoT sensor monitoring and anomaly detection dashboard for agri-food supply chains — built as a foundational prototype exploring core concepts of **Cyber Digital Twin (CDT)** architectures.
+A real-time IoT sensor monitoring and anomaly detection dashboard for Agri-food supply chains detecting environmental breaches and cyber anomalies across distributed edge nodes.
+
+## The Problem
+
+Agri-food supply chains are uniquely vulnerable. A single undetected temperature breach in cold storage can spoil an entire shipment. A humidity anomaly in a processing zone can trigger product contamination. And increasingly, these same IoT sensor networks are targets for cyberattacks where a manipulated sensor reading looks identical to a genuine equipment fault.
+
+Most small and mid-scale agri-food operations have no real-time visibility into what their IoT nodes are reporting. Anomalies go undetected for minutes or hours. By the time an alert is raised, the damage is done.
+
+This project was built to address that gap a lightweight, edge-deployable anomaly detection dashboard that monitors heterogeneous IoT nodes in real time, classifies breaches by severity, and logs every event with a timestamp for audit and response.
+
+---
 
 ## Project Overview
 
-This project simulates an IoT-enabled supply chain monitoring system that:
-- Ingests real-time sensor data from multiple supply chain nodes (warehouses, cold storage, transport units, processing zones)
-- Detects anomalies using rule-based threshold logic — temperature breaches, humidity violations, CO₂ level anomalies
-- Displays a live dashboard with alert logging, historical charts, and anomaly statistics
-- Demonstrates the data ingestion and anomaly detection layers central to Semantic-Aware Cyber Digital Twin frameworks
+This system simulates a decentralised IoT monitoring setup across four Agri-food supply chain nodes.
 
-## Research Motivation
+### The system:
 
-This prototype was developed in preparation for doctoral research on **Semantic-Aware Cyber Digital Twins for Agri-food Supply Chains** — the PhD scholarship project at Maynooth University's Department of Computer Science (supervised by Dr. Mansoor Ahmed, ADAPT Centre).
+- Ingests real-time sensor data from multiple heterogeneous nodes (cold storage, warehouses, transport units, processing zones)
+- Detects anomalies using rule-based threshold logic across temperature, humidity, and CO₂ streams
+- Classifies every breach as **CRITICAL** or **WARNING** for immediate operational awareness
+- Displays a live dashboard with alert logging, historical trend charts, and anomaly statistics
+- Auto-refreshes every 5 seconds for continuous monitoring
 
-The core challenge in agri-food CDT research is building systems that can:
-1. Ingest heterogeneous IoT sensor streams in real-time
-2. Detect anomalies that indicate cyber threats or operational failures
-3. Reason semantically about the meaning of those anomalies in context
+---
 
-This project addresses challenge (1) and (2), providing a working prototype of the data and detection layers.
+## Monitored Nodes
+
+| Node | Supply Chain Stage | Monitored Process |
+|--------|-------------------|------------------|
+| Cold Storage Unit | Warehouse Storage | Cold chain preservation and ambient climate control |
+| Processing Zone | Primary Processing | Environmental monitoring during active processing |
+| Transport Unit | Logistics & Distribution | In-transit mobile sensor telemetry |
+| Distribution Hub | Retail Logistics | Final-mile inventory reception and dispatch |
+
+---
+
+## Sensor Streams & Threshold Boundaries
+
+| Sensor | Safe Zone | Risk |
+|----------|----------|------|
+| Temperature | 1°C – 8°C | Cold chain breach → product spoilage |
+| Humidity | 55% – 85% | Environmental degradation → contamination risk |
+| CO₂ Level | Normal operating range | Atmospheric anomaly → storage integrity risk |
+
+---
 
 ## Tech Stack
 
 | Layer | Technology |
-|---|---|
+|---------|-----------|
 | Backend | Python, Flask |
 | Anomaly Detection | Rule-based threshold logic (extensible to ML) |
 | Frontend Dashboard | HTML, CSS, JavaScript, Chart.js |
-| Data Simulation | Python random + sensor models |
+| Data Simulation | Python sensor models with randomised walk variants |
+
+---
 
 ## Features
 
-- **Live sensor readings** — temperature, humidity, CO₂ from simulated supply chain nodes
-- **Real-time anomaly detection** — CRITICAL / WARNING alerts with breach details
-- **Historical chart** — temperature trend over last 20 readings
-- **Alert log** — timestamped anomaly log with location and breach values
-- **Statistics panel** — total readings, anomaly count, anomaly rate
-- **Auto-refresh** — new reading every 5 seconds
+- Live sensor readings from all four simulated nodes
+- Real-time anomaly detection with CRITICAL and WARNING alerts
+- Historical trend visualisation using Chart.js
+- Timestamped alert logging with exact breach values
+- Statistics panel showing total readings, anomaly count, and anomaly rate
+- Automatic dashboard refresh every 5 seconds
+
+---
 
 ## How to Run
 
 ```bash
 # 1. Clone the repository
 git clone https://github.com/AsadRaza067/agri-iot-anomaly-monitor.git
+
+# 2. Enter the project directory
 cd agri-iot-anomaly-monitor
 
-# 2. Install dependencies
+# 3. Install dependencies
 pip install -r requirements.txt
 
-# 3. Run the app
+# 4. Run the application
 python app.py
 
-# 4. Open browser
-# Go to: http://localhost:5000
+# 5. Open your browser
+http://localhost:5000
 ```
+
+---
 
 ## Project Structure
 
-```
+```text
 agri-iot-anomaly-monitor/
 │
-├── app.py                  # Flask backend + sensor simulation + anomaly detection
+├── app.py                  # Flask backend — sensor simulation + anomaly detection engine
 ├── requirements.txt        # Python dependencies
-├── index.html              # Live dashboard (HTML + Chart.js)
+├── index.html              # Live dashboard — HTML + Chart.js
 └── README.md
 ```
 
+---
+
+## Part of a Larger Pipeline
+
+This project is **Part 1 of 3** in a connected **SA-CDT research pipeline**.
+
+| Stage | Project | Role |
+|---------|---------|------|
+| 1 — Edge Detection | Agri-IoT Anomaly Monitor | Real-time IoT ingestion and rule-based anomaly detection |
+| 2 — Threat Classification | Supply Chain Threat Classifier | ML-based multi-class cyber threat detection |
+| 3 — Digital Twin Layer | Agri-Food Digital Twin Dashboard | Real-time CDT state mirroring and visualisation |
+
+---
+
 ## Future Extensions
 
-- Replace rule-based detection with ML models (Isolation Forest, LSTM)
-- Add OWL ontology layer for semantic reasoning over sensor data
+- Replace rule-based detection with machine learning models (Isolation Forest, LSTM)
+- Add OWL ontology layer for semantic reasoning over anomaly events
 - Integrate real IoT hardware (Raspberry Pi + DHT22 sensors)
-- Add MQTT protocol for real IoT data ingestion
-- Build a knowledge graph layer — moving toward full Semantic-Aware CDT
+- Add MQTT protocol for real-time IoT data ingestion
+- Build a knowledge graph layer toward a full Semantic-Aware Cyber Digital Twin
+
+---
+
+## Related Publication
+
+**Real-Time Cyber-Physical Intrusion Detection at the Industrial IoT Edge: A Lightweight Temporal Causal Explainable AI (XAI) Framework**
+
+Raza, A. (2026). Zenodo Preprint.
+
+DOI: 10.5281/zenodo.20539991
+
+---
 
 ## Author
 
 **Asad Raza**
-BSc Computer Science — BIIT, PMAS Arid Agriculture University Rawalpindi
+
+BSc Computer Science — BIIT, PMAS Arid Agriculture University, Rawalpindi
+
 📧 asadraza0667@gmail.com
-🔗 [LinkedIn](https://www.linkedin.com/in/asad-raza-a007r)
+
+🔗 LinkedIn
+
+🔗 GitHub
