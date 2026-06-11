@@ -109,7 +109,7 @@ This project is **Part 1 of 3** in a connected **SA-CDT research pipeline**.
 
 | Stage | Project | Role |
 |---------|---------|------|
-| 1 — Edge Detection | Decentralised-Anomaly-Detection-in-Heterogeneous-Agri-IoT-Networks-Using-Edge-Computing | Real-time IoT ingestion and rule-based anomaly detection |
+| 1 — Edge Detection | Decentralised Anomaly Detection in Heterogeneous Agri IoT Networks Using Edge Computing | Real-time IoT ingestion and rule-based anomaly detection |
 | 2 — Threat Classification | Supply Chain Threat Classifier | ML-based multi-class cyber threat detection |
 | 3 — Digital Twin Layer | Agri-Food Digital Twin Dashboard | Real-time CDT state mirroring and visualisation |
 
