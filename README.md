@@ -73,10 +73,10 @@ This system simulates a decentralised IoT monitoring setup across four Agri-food
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/AsadRaza067/agri-iot-anomaly-monitor.git
+git clone https://github.com/AsadRaza067/Decentralised-Anomaly-Detection-in-Heterogeneous-Agri-IoT-Networks-Using-Edge-Computing
 
 # 2. Enter the project directory
-cd agri-iot-anomaly-monitor
+cd Decentralised-Anomaly-Detection-in-Heterogeneous-Agri-IoT-Networks-Using-Edge-Computing
 
 # 3. Install dependencies
 pip install -r requirements.txt
@@ -109,7 +109,7 @@ This project is **Part 1 of 3** in a connected **SA-CDT research pipeline**.
 
 | Stage | Project | Role |
 |---------|---------|------|
-| 1 — Edge Detection | Agri-IoT Anomaly Monitor | Real-time IoT ingestion and rule-based anomaly detection |
+| 1 — Edge Detection | Decentralised-Anomaly-Detection-in-Heterogeneous-Agri-IoT-Networks-Using-Edge-Computing | Real-time IoT ingestion and rule-based anomaly detection |
 | 2 — Threat Classification | Supply Chain Threat Classifier | ML-based multi-class cyber threat detection |
 | 3 — Digital Twin Layer | Agri-Food Digital Twin Dashboard | Real-time CDT state mirroring and visualisation |
 
